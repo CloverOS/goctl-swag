@@ -17,7 +17,7 @@
 - [安装插件](#安装插件)
 - [快速开始](#快速开始)
 - [截图](#截图)
-- [goctl-swag-cli指令说明](#goctl-swag cli指令说明)
+- [goctl-swag指令说明](#goctl-swag指令说明)
 - [格式说明](#格式说明)
   - [通用API信息](#通用api信息)
   - [API声明](#api声明)
@@ -48,7 +48,7 @@ cd goctl-swag
 - 下载本项目后,可以到testdata/go-zero下将user目录直接删除,接着执行以下指令
 
 ```shell
- goctl api plugin -p goctl-swag="init" -api testdata/user.api -dir testdata/go-zero/user 
+goctl api plugin -p goctl-swag="init" -api testdata/user.api -dir testdata/go-zero/user 
 ```
 
 - 就会在testdata/go-zero/user/doc生成一个doc_gin.go文件，这个文件就是swagger文档的生成文件，里面包含了swagger的json数据和前端页面的增强部分的整合。
@@ -57,7 +57,7 @@ cd goctl-swag
 - 最后执行以下指令生成go-zero项目（可以参考[goctl-插件指令](https://go-zero.dev/docs/goctl/plugin)）
 
 ```shell
- goctl api go -api testdata/user.api -dir testdata/go-zero/user 
+goctl api go -api testdata/user.api -dir testdata/go-zero/user 
 ```  
 
 - 进行页面增强适配
@@ -90,24 +90,24 @@ func main() {
 - 使用默认路由写法
 
 ```go
-    server.AddRoutes([]rest.Route{
-        {
-            Method:  http.MethodGet,
-            Path:    "/swagger",
-            Handler: goctl_swag.Doc("/swagger", "dev"),
+server.AddRoutes([]rest.Route{
+    {
+        Method:  http.MethodGet,
+        Path:    "/swagger",
+        Handler: goctl_swag.Doc("/swagger", "dev"),
+    },
+    {
+        Method: http.MethodGet,
+        Path:   "/swagger-json",
+        Handler: func (writer http.ResponseWriter, request *http.Request) {
+            writer.Header().Set("Content-Type", "application/json; charset=utf-8")
+            _, err := writer.Write([]byte(doc.Doc))
+            if err != nil {
+                httpx.Error(writer, err)
+            }
         },
-        {
-            Method: http.MethodGet,
-            Path:   "/swagger-json",
-            Handler: func (writer http.ResponseWriter, request *http.Request) {
-                writer.Header().Set("Content-Type", "application/json; charset=utf-8")
-                _, err := writer.Write([]byte(doc.Doc))
-                if err != nil {
-                    httpx.Error(writer, err)
-                }
-            },
-        },
-    })
+    },
+})
 ```
 
 - 最后启动项目，访问http://localhost:8888/swagger即可看到效果
@@ -124,10 +124,10 @@ go run testdata/go-zero/user/user.go -f testdata/go-zero/user/etc/user.yaml
 ![form](/images/swag_form.png)
 ![json](/images/swag-json.png)
 
-## goctl-swag cli指令说明
+## goctl-swag指令说明
 
 ```shell
- goctl-swag init [command options] [arguments...]
+goctl-swag init [command options] [arguments...]
 ```
 
 | 参数               | 说明              | 默认值            |
@@ -285,19 +285,19 @@ UploadRequest {
 
 ```go
 doc.WrapHandlerWithGroupObject([]gen.SwaggerGroupObject{
-{
-Name:           "user",
-Url:            "../swagger/user.json",
-SwaggerVersion: "2.0",
-Location:       "",
-},
-{
-Name:           "order",
-Url:            "localhost:8889",
-SwaggerVersion: "2.0",
-Location:       "",
-},
-}),
+    {
+        Name:           "user",
+        Url:            "../swagger/user.json",
+        SwaggerVersion: "2.0",
+        Location:       "",
+    },
+    {
+        Name:           "order",
+        Url:            "localhost:8889",
+        SwaggerVersion: "2.0",
+        Location:       "",
+    },
+})
 ```
 - 这里url填写不同微服务的swag文档数据,之后就可以在页面的左上角中选择对应的微服务文档了
 ![group](/images/group.png)  
