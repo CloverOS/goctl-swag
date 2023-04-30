@@ -45,7 +45,7 @@ git clone https://github.com/CloverOS/goctl-swag
 cd goctl-swag
 ```
 
-- 下载本项目后,可以到testdata/go-zero下将user目录直接删除,接着执行以下指令
+- 下载本项目后,接着执行以下指令
 
 ```shell
 goctl api plugin -p goctl-swag="init" -api testdata/user.api -dir testdata/go-zero/user 
