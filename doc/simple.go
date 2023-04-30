@@ -1,4 +1,4 @@
-package goctl_swag
+package doc
 
 import (
 	"bytes"
