@@ -113,6 +113,7 @@ server.AddRoutes([]rest.Route{
 - 最后启动项目，访问http://localhost:8888/swagger即可看到效果
 
 ```shell
+go mod tidy
 go run testdata/go-zero/user/user.go -f testdata/go-zero/user/etc/user.yaml 
 ```
 
