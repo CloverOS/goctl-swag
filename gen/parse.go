@@ -51,20 +51,14 @@ func (ps *Parser) parseSwag(g *Gen) (openapi.Swagger, error) {
 		},
 	}
 
-	err := ps.getSecurityDefinitions()
+	ps.getSecurityDefinitions()
+
+	err := ps.getPaths()
 	if err != nil {
 		return openapi.Swagger{}, err
 	}
 
-	err = ps.getPaths()
-	if err != nil {
-		return openapi.Swagger{}, err
-	}
-
-	err = ps.getDefinitions()
-	if err != nil {
-		return openapi.Swagger{}, err
-	}
+	ps.getDefinitions()
 
 	return *ps.Swagger, nil
 }
@@ -93,7 +87,7 @@ func (ps *Parser) getPaths() error {
 	return nil
 }
 
-func (ps *Parser) getDefinitions() error {
+func (ps *Parser) getDefinitions() {
 	for _, tp := range ps.Plugin.Api.Types {
 		defineStruct, ok := tp.(spec.DefineStruct)
 		if !ok {
@@ -107,7 +101,6 @@ func (ps *Parser) getDefinitions() error {
 			ps.Swagger.Definitions[defineStruct.RawName] = ps.getDefinition(defineStruct)
 		}
 	}
-	return nil
 }
 
 func (ps *Parser) getDefinition(defineStruct spec.DefineStruct) openapi.Schema {
@@ -156,7 +149,7 @@ func (ps *Parser) getDefinition(defineStruct spec.DefineStruct) openapi.Schema {
 	return schema
 }
 
-func (ps *Parser) getSecurityDefinitions() error {
+func (ps *Parser) getSecurityDefinitions() {
 	apikey, ok := ps.Plugin.Api.Info.Properties["securityDefinitions_apikey"]
 	if ok {
 		newSecDefValue := openapi.SecurityScheme{}
@@ -165,7 +158,6 @@ func (ps *Parser) getSecurityDefinitions() error {
 		newSecDefValue.Type = "apiKey"
 		newSecDefValue.In = ps.Plugin.Api.Info.Properties["in"]
 		ps.Swagger.SecurityDefinitions["apiKey"] = &newSecDefValue
-		return nil
 	}
 	basic, ok := ps.Plugin.Api.Info.Properties["securityDefinitions_basic"]
 	if ok {
@@ -173,7 +165,6 @@ func (ps *Parser) getSecurityDefinitions() error {
 		newSecDefValue.Description = basic
 		newSecDefValue.Type = "basic"
 		ps.Swagger.SecurityDefinitions["basic"] = &newSecDefValue
-		return nil
 	}
 	//todo oauth2
 	oauth2Application, ok := ps.Plugin.Api.Info.Properties["securityDefinitions_oauth2_application"]
@@ -184,9 +175,7 @@ func (ps *Parser) getSecurityDefinitions() error {
 		newSecDefValue.TokenURL = ps.Plugin.Api.Info.Properties["tokenUrl"]
 		newSecDefValue.Scopes = make(map[string]string)
 		ps.Swagger.SecurityDefinitions["oauth2.application"] = &newSecDefValue
-		return nil
 	}
-	return errors.New("getSecurityDefinitions failed,please check your api file")
 }
 
 func (ps *Parser) getSwaggerInfoObject(p *plugin.Plugin) openapi.Info {
