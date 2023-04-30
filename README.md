@@ -31,7 +31,7 @@
 ### 安装插件
 
 ```go
-go install github.com/CloverOS/goctl-swag/cmd/goctl-swag@v1.5.2
+go install github.com/CloverOS/goctl-swag/cmd/goctl-swag@v0.0.8
 ```
 
 ### 快速开始
