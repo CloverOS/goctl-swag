@@ -16,11 +16,8 @@
 ## 目录
 - [安装插件](#安装插件)
 - [快速开始](#快速开始)
-- [生成文档示例](#生成文档示例)
-- [生成go-zero项目](#生成go-zero项目)
-- [页面增强适配](#页面增强适配)
 - [截图](#截图)
-- [goctl-swag-cli指令说明](#goctl-swag-cli指令说明)
+- [goctl-swag-cli指令说明](#goctl-swag cli指令说明)
 - [格式说明](#格式说明)
   - [通用API信息](#通用api信息)
   - [API声明](#api声明)
@@ -68,25 +65,25 @@ cd goctl-swag
 
 ```go
 func main() {
-flag.Parse()
+    flag.Parse()
 
-var c config.Config
-conf.MustLoad(*configFile, &c)
+    var c config.Config
+    conf.MustLoad(*configFile, &c)
 
-r := gin.NewRouter()
-server := rest.MustNewServer(c.RestConf, rest.WithRouter(r))
-defer server.Stop()
+    r := gin.NewRouter()
+    server := rest.MustNewServer(c.RestConf, rest.WithRouter(r))
+    defer server.Stop()
 
-ctx := svc.NewServiceContext(c)
-handler.RegisterHandlers(server, ctx)
-//for gin-swagger-bootstrap doc
-server.AddRoute(rest.Route{
-Method:  http.MethodGet,
-Path:    "/swagger/*any",
-Handler: doc.WrapHandler(),
-})
-fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
-server.Start()
+    ctx := svc.NewServiceContext(c)
+    handler.RegisterHandlers(server, ctx)
+    //for gin-swagger-bootstrap doc
+    server.AddRoute(rest.Route{
+        Method:  http.MethodGet,
+        Path:    "/swagger/*any",
+        Handler: doc.WrapHandler(),
+    })
+    fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
+    server.Start()
 }
 ```
 
@@ -94,23 +91,23 @@ server.Start()
 
 ```go
     server.AddRoutes([]rest.Route{
-{
-Method:  http.MethodGet,
-Path:    "/swagger",
-Handler: goctl_swag.Doc("/swagger", "dev"),
-},
-{
-Method: http.MethodGet,
-Path:   "/swagger-json",
-Handler: func (writer http.ResponseWriter, request *http.Request) {
-writer.Header().Set("Content-Type", "application/json; charset=utf-8")
-_, err := writer.Write([]byte(doc.Doc))
-if err != nil {
-httpx.Error(writer, err)
-}
-},
-},
-})
+        {
+            Method:  http.MethodGet,
+            Path:    "/swagger",
+            Handler: goctl_swag.Doc("/swagger", "dev"),
+        },
+        {
+            Method: http.MethodGet,
+            Path:   "/swagger-json",
+            Handler: func (writer http.ResponseWriter, request *http.Request) {
+                writer.Header().Set("Content-Type", "application/json; charset=utf-8")
+                _, err := writer.Write([]byte(doc.Doc))
+                if err != nil {
+                    httpx.Error(writer, err)
+                }
+            },
+        },
+    })
 ```
 
 - 最后启动项目，访问http://localhost:8888/swagger即可看到效果
@@ -143,7 +140,7 @@ go run testdata/go-zero/user/user.go -f testdata/go-zero/user/etc/user.yaml
 
 ## 格式说明
 
-### 可以参考[user.api](https://github.com/CloverOS/goctl-swag/tree/master/testdata/go-zero/user/user.api)
+### 可以参考[user.api](/testdata/user.api)
 
 ### 通用API信息
 
@@ -188,7 +185,7 @@ info(
 | produce                 | API可以生成的MIME类型的列表。值必须如“[Mime类型](#mime类型)”中所述。                                                 |
 | schemes                 | 用,分隔的请求的传输协议。                                                                                 |
 
-关于无法使用"https://"类似的这种字符串的问题，可以使用`[$https]`这种方式来解决，`swag`会自动替换为`https://`。
+关于无法使用"https://"类似的这种字符串的问题，可以使用`[$https]`这种方式来解决，会自动替换为`https://`。
 
 ```
 [$https] ==> https://
@@ -200,20 +197,20 @@ info(
 ## API声明
 
 ```api 
-	@doc(
-		summary: "登录"
-		description: "客户端用户登录"
-	)
-	@handler jsonLoginHandler
-	post /users/login (JsonRequest) returns (TokenResponse)
+@doc(
+    summary: "登录"
+    description: "客户端用户登录"
+)
+@handler jsonLoginHandler
+post /users/login (JsonRequest) returns (TokenResponse)
 ```
 
 或者简写
 
 ```api
-    @doc "表单登录"
-    @handler formLoginHandler
-    post /users/form/login (FormRequest)
+@doc "表单登录"
+@handler formLoginHandler
+post /users/form/login (FormRequest)
 ```
 
 ## API分组声明
@@ -230,18 +227,20 @@ info(
 ## 请求参数声明
 
 ### Json
+```api
 JsonRequest {
-RequestId string `header:"requestId"`       //请求id
-Account   string `json:"account"`           //账号
-Password  string `json:"password"`          //密码
-SecCode   string `json:"sec_code,optional"` //安全密码
+    RequestId string `header:"requestId"`       //请求id
+    Account   string `json:"account"`           //账号
+    Password  string `json:"password"`          //密码
+    SecCode   string `json:"sec_code,optional"` //安全密码
 }
+```
 
 ### 文件上传
 ```api
 UploadRequest {
-		MyFile string `form:"myFile,file"` //文件
-	}
+    MyFile string `form:"myFile,file"` //文件
+}
 ```
 
 ## Mime类型
