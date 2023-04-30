@@ -8,7 +8,7 @@ import (
 	"runtime"
 )
 
-const Version = "v1.5.3"
+const Version = "v1.5.4"
 
 const (
 	HostFlag     = "host"
