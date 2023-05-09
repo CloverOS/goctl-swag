@@ -224,6 +224,7 @@ post /users/form/login (FormRequest)
     tag: 登录模块
 )
 ```
+- open: true 代表该模块是否为开放接口，不写的话默认为私有接口（即false）
 
 ## 请求参数声明
 
