@@ -219,7 +219,7 @@ post /users/form/login (FormRequest)
 ```api
 @server(
     group: login
-    open: false
+    open: true
     prefix: /login
     tag: 登录模块
 )

@@ -66,9 +66,9 @@ func (ps *Parser) parseSwag(g *Gen) (openapi.Swagger, error) {
 func (ps *Parser) getPaths() error {
 	groups := ps.Plugin.Api.Service.Groups
 	for _, group := range groups {
-		open := true
-		if group.GetAnnotation("open") == "false" {
-			open = false
+		open := false
+		if group.GetAnnotation("open") == "true" {
+			open = true
 		}
 		tag := group.GetAnnotation("tag")
 		for _, route := range group.Routes {
