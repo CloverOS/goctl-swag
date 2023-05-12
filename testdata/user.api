@@ -1,131 +1,134 @@
 syntax = "v1"
 
 info(
-	title: "用户服务接口文档"
-	desc: "用户服务文档"
-	version: "1.0"
-	basePath: "/"
-	termsOfService: "[$https]swagger.io/terms/"
-	contact_name: "khthink"
-	contact_url: "[$https]khthink.cn"
-	contact_email: "example"
-	license_name: "Apache 2.0"
-	license_url: "[$https]www.apache.org/licenses/LICENSE-2.0.html"
-	BasePath: "/v1"
-	accept: "json"
-	produce: "json"
-	schemes: "http,https"
-	securityDefinitions_apikey: "AccessToken"
-	in: "header"
-	name: "Access-Token"
+    title: "用户服务接口文档"
+    desc: "用户服务文档"
+    version: "1.0"
+    basePath: "/"
+    termsOfService: "[$https]swagger.io/terms/"
+    contact_name: "khthink"
+    contact_url: "[$https]khthink.cn"
+    contact_email: "example"
+    license_name: "Apache 2.0"
+    license_url: "[$https]www.apache.org/licenses/LICENSE-2.0.html"
+    BasePath: "/v1"
+    accept: "json"
+    produce: "json"
+    schemes: "http,https"
+    securityDefinitions_apikey: "AccessToken"
+    in: "header"
+    name: "Access-Token"
 )
 type (
-	MyResponse {
-		Code int    `json:"code"` //错误码
-		Msg  string `json:"msg"`  //错误消息
-	}
-	PageRequest {
-		Page     int    `path:"page"`     //页数:1开始
-		Count    int    `path:"count"`    //每页数量
-		NickName string `json:"nickName"` //昵称
-	}
+    MyResponse {
+        Code int `json:"code"`   //错误码
+        Msg string `json:"msg"`  //错误消息
+    }
+    PageRequest {
+        PageReq
+        NickName string `json:"nickName"` //昵称
+    }
 
-	JsonRequest {
-		RequestId string `header:"requestId"`       //请求id
-		Account   string `json:"account"`           //账号
-		Password  string `json:"password"`          //密码
-		SecCode   string `json:"sec_code,optional"` //安全密码
-	}
-	FormRequest {
-		Account  string `form:"account"`           //账号
-		Password string `form:"password"`          //密码
-		SecCode  string `form:"sec_code,optional"` //安全密码
-	}
-	GetCaptchaRequest {
-		Key string `path:"key"` //验证码key
-	}
-	EditUserHeadImg {
-		UserId  string   `json:"userId"`  //用户id
-		HeadImg []string `json:"headImg"` //头像图片组
-	}
-	UploadRequest {
-		MyFile string `form:"myFile,file"` //文件
-	}
-	UserListResponse {
-		UserList []User `json:"userList"` //用户列表
-	}
-	TokenResponse {
-		Token string `json:"token"` //token
-	}
-	User {
-		Name     string   `json:"name"`     //姓名
-		Account  string   `json:"account"`  //账号
-		Password string   `json:"password"` //密码
-		UserVip           //用户Vip
-		HeadImg  []string `json:"headImg"` //头像图片组
-	}
-	TestNest {
-		Test string `json:"test"` //测试
-	}
-	UserVip {
-		VipId    string `json:"vipId"`    //vipid
-		VipLevel string `json:"vipLevel"` //vip等级
-	}
-	DownloadRequest {
-		FileDir  string `form:"fileDir,optional"` //文件夹
-		FileName string `form:"fileName"`         //文件名
-	}
+    JsonRequest {
+        RequestId string `header:"requestId"`       //请求id
+        Account string `json:"account"`             //账号
+        Password string `json:"password"`           //密码
+        SecCode string `json:"sec_code,optional"`   //安全密码
+    }
+    FormRequest {
+        Account string `form:"account"`            //账号
+        Password string `form:"password"`          //密码
+        SecCode string `form:"sec_code,optional"`  //安全密码
+    }
+    GetCaptchaRequest {
+        Key string `path:"key"` //验证码key
+    }
+    EditUserHeadImg {
+        UserId string `json:"userId"`     //用户id
+        HeadImg []string `json:"headImg"` //头像图片组
+    }
+    UploadRequest {
+        MyFile string `form:"myFile,file"` //文件
+    }
+    UserListResponse {
+        UserList []User `json:"userList"` //用户列表
+    }
+    TokenResponse {
+        Token string `json:"token"` //token
+    }
+    User {
+        Name string `json:"name"`         //姓名
+        Account string `json:"account"`   //账号
+        Password string `json:"password"` //密码
+        UserVip                           //用户Vip
+        HeadImg []string `json:"headImg"` //头像图片组
+    }
+    TestNest {
+        Test string `json:"test"` //测试
+    }
+    UserVip {
+        VipId string `json:"vipId"`       //vipid
+        VipLevel string `json:"vipLevel"` //vip等级
+    }
+    DownloadRequest {
+        FileDir string `form:"fileDir,optional"`  //文件夹
+        FileName string `form:"fileName"`         //文件名
+    }
+    PageReq {
+        Page int `path:"page"`      //页数:1开始
+        Count int `path:"count"`    //每页数量
+    }
 )
 
 @server(
-	group: login
-	open: true
-	prefix: /login
-	tag: 登录模块
+    group: login
+    open: true
+    prefix: /login
+    tag: 登录模块
 )
 service user {
-	@doc(
-		summary: "登录"
-		description: "客户端用户登录"
-	)
-	@handler jsonLoginHandler
-	post /users/login (JsonRequest) returns (TokenResponse)
-	
-	@doc "表单登录"
-	@handler formLoginHandler
-	post /users/form/login (FormRequest)
-	
-	@doc "获取验证码"
-	@handler getcaptchaHandler
-	get /get/captcha/:key (GetCaptchaRequest)
+    @doc(
+        summary: "登录"
+        description: "客户端用户登录"
+    )
+    @handler jsonLoginHandler
+    post /users/login (JsonRequest) returns (TokenResponse)
+
+    @doc "表单登录"
+    @handler formLoginHandler
+    post /users/form/login (FormRequest)
+
+    @doc "获取验证码"
+    @handler getcaptchaHandler
+    get /get/captcha/:key (GetCaptchaRequest)
 }
 
 @server(
-	group: user
-	prefix: /user
-	tag: 用户模块
+    group: user
+    prefix: /user
+    tag: 用户模块
 )
 service user {
-	@doc "获取用户列表"
-	@handler userListHandler
-	post /list/:page/:count (PageRequest) returns (UserListResponse)
-	
-	@doc "编辑自己的头像组"
-	@handler editMyHeadImgs
-	post /edit/myheadimg (EditUserHeadImg) returns (MyResponse)
+    @doc "获取用户列表"
+    @handler userListHandler
+    post /list/:page/:count (PageRequest) returns (UserListResponse)
+
+    @doc "编辑自己的头像组"
+    @handler editMyHeadImgs
+    post /edit/myheadimg (EditUserHeadImg) returns (MyResponse)
 }
 
 @server(
-	group: user
-	prefix: /fileserver
-	tag: 文件管理
+    group: user
+    prefix: /fileserver
+    tag: 文件管理
 )
 service user {
-	@doc "文件上传"
-	@handler upload
-	post /file/upload (UploadRequest)
-	
-	@doc "文件下载"
-	@handler downloadHandler
-	get /file/download (DownloadRequest)
+    @doc "文件上传"
+    @handler upload
+    post /file/upload (UploadRequest)
+
+    @doc "文件下载"
+    @handler downloadHandler
+    get /file/download (DownloadRequest)
 }

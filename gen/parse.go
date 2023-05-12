@@ -125,38 +125,42 @@ func (ps *Parser) getDefinition(defineStruct spec.DefineStruct) openapi.Schema {
 
 	ps.debug.Printf("getDefinition:%s", defineStruct.Name())
 
-	for _, member := range defineStruct.GetNonBodyMembers() {
-		if tempDefineStruct, ok := member.Type.(spec.DefineStruct); ok {
-			inlineSchema := ps.getDefinition(tempDefineStruct)
-			for k, v := range inlineSchema.Properties {
-				schema.Properties[k] = v
-			}
-		}
-	}
-
 	for _, member := range defineStruct.Members {
-		//Model's property schema
-		propSchema := openapi.Schema{}
-		key := ""
-		for _, tag := range member.Tags() {
-			if tag.Key == "header" || tag.Key == "form" || tag.Key == "json" {
-				key = tag.Name
-				break
-			}
-		}
-		//if key doesn't exist, skip
-		if key == "" {
-			continue
-		}
-		propSchema.Description = strings.ReplaceAll(member.GetComment(), "//", "")
-		ps.getParamType(&propSchema, member)
-		if !member.IsOptional() {
-			propSchema.Required = openapi.StringOrArray{"true"}
-		}
-		schema.Properties[key] = propSchema
+		ps.getPropSchema(member, &schema)
 	}
 
 	return schema
+}
+
+func (ps *Parser) getPropSchema(member spec.Member, schema *openapi.Schema) {
+	//Model's property schema
+	propSchema := openapi.Schema{}
+	if member.IsInline {
+		def, ok := member.Type.(spec.DefineStruct)
+		if ok {
+			for _, m := range def.Members {
+				ps.getPropSchema(m, schema)
+			}
+		}
+		return
+	}
+	key := ""
+	for _, tag := range member.Tags() {
+		if tag.Key == "header" || tag.Key == "form" || tag.Key == "json" {
+			key = tag.Name
+			break
+		}
+	}
+	//if key doesn't exist, skip
+	if key == "" {
+		return
+	}
+	propSchema.Description = strings.ReplaceAll(member.GetComment(), "//", "")
+	ps.getParamType(&propSchema, member)
+	if !member.IsOptional() {
+		propSchema.Required = openapi.StringOrArray{"true"}
+	}
+	schema.Properties[key] = propSchema
 }
 
 func (ps *Parser) getSecurityDefinitions() {
