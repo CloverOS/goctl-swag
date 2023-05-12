@@ -55,7 +55,8 @@ func (g *Gen) DoGen() error {
 		return err
 	}
 	fmt.Println("start generating documentation ...")
-	swag, err := NewParser(p).parseSwag(g)
+	ps := NewParser(p)
+	swag, err := ps.parseSwag(g)
 	if err != nil {
 		return err
 	}
@@ -77,6 +78,18 @@ func (g *Gen) DoGen() error {
 	//	templateFile = "tpl/doc_mux.tpl"
 	default:
 		return errors.New("unknown web frame")
+	}
+	if g.config.Router {
+		g.debug.Printf("gen Router ...")
+		_ = g.genFile(FileGenConfig{
+			dir:          p.Dir,
+			subDir:       g.config.Dir,
+			filename:     "router.go",
+			templateName: "routerTemplate",
+			category:     "router",
+			templateFile: "tpl/router.tpl",
+			data:         g.getRouters(ps),
+		})
 	}
 	return g.genFile(FileGenConfig{
 		dir:          p.Dir,
@@ -156,4 +169,12 @@ func (g *Gen) getGroup(p *plugin.Plugin) string {
 		return ""
 	}
 	return string(indent)
+}
+
+func (g *Gen) getRouters(p *Parser) []RouteInfos {
+	var routers []RouteInfos
+	for s := range p.RouterMap {
+		routers = append(routers, p.RouterMap[s])
+	}
+	return routers
 }

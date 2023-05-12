@@ -16,6 +16,7 @@ const (
 	BasePathFlag = "basepath"
 	WebFrameFlag = "webframe"
 	CoverFlag    = "cover"
+	RouterFlag   = "router"
 )
 
 var (
@@ -49,6 +50,12 @@ var (
 			Value:   true,
 			Usage:   "choose whether to automatically overwrite files",
 		},
+		&cli.BoolFlag{
+			Name:    RouterFlag,
+			Aliases: []string{"rt"},
+			Value:   true,
+			Usage:   "enable gen router info in go file",
+		},
 	}
 )
 
@@ -59,6 +66,7 @@ func initAction(ctx *cli.Context) error {
 		BasePath: ctx.String(BasePathFlag),
 		WebFrame: ctx.String(WebFrameFlag),
 		Cover:    ctx.Bool(CoverFlag),
+		Router:   ctx.Bool(RouterFlag),
 	}).DoGen()
 }
 

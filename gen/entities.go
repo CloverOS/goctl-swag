@@ -74,3 +74,17 @@ type SwaggerGroupObject struct {
 	SwaggerVersion string `json:"swaggerVersion"`
 	Location       string `json:"location"`
 }
+
+type RouteGroup struct {
+	GroupName string
+}
+
+type RouteInfos struct {
+	Method     string //  method
+	Path       string //  path
+	BasePath   string //  BasePath
+	HandlerFun string //  handlerFun
+	Summary    string //  Summary
+	Public     bool   //  is public router
+	RouteGroup
+}

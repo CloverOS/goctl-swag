@@ -138,6 +138,7 @@ goctl-swag init [command options] [arguments...]
 | --dir, -d        | 生成的doc.go的文件夹路径 | ./doc          |
 | --webframe, --wb | 选择使用哪个框架        | gin            |
 | --cover, --cv    | 选择是否自动覆盖文件      | true           |
+| --router, --rt   | 是否生成路由信息        | true           |
 
 ## 格式说明
 

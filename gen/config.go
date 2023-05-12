@@ -21,6 +21,9 @@ type Config struct {
 
 	//Cover auto cover generation
 	Cover bool
+
+	//Router auto gen router info
+	Router bool
 }
 
 // FileGenConfig file creation configuration

@@ -13,15 +13,17 @@ import (
 )
 
 type Parser struct {
-	Swagger *openapi.Swagger
-	Plugin  *plugin.Plugin
-	debug   Debugger
+	Swagger   *openapi.Swagger
+	Plugin    *plugin.Plugin
+	RouterMap map[string]RouteInfos
+	debug     Debugger
 }
 
 func NewParser(p *plugin.Plugin) *Parser {
 	return &Parser{
-		Plugin: p,
-		debug:  log.New(os.Stdout, "", log.LstdFlags),
+		Plugin:    p,
+		RouterMap: make(map[string]RouteInfos),
+		debug:     log.New(os.Stdout, "", log.LstdFlags),
 	}
 }
 
@@ -73,7 +75,8 @@ func (ps *Parser) getPaths() error {
 		tag := group.GetAnnotation("tag")
 		for _, route := range group.Routes {
 			pathItem := openapi.PathItem{}
-			err := ps.getOperation(&pathItem, &route, open, tag)
+			routeInfo := RouteInfos{}
+			err := ps.getOperation(&pathItem, &route, open, tag, &routeInfo)
 			if err != nil {
 				return err
 			}
@@ -82,6 +85,13 @@ func (ps *Parser) getPaths() error {
 				path = "/" + path
 			}
 			ps.Swagger.Paths.Paths[path] = pathItem
+			routeInfo.BasePath = ps.Swagger.BasePath
+			routeInfo.Path = path
+			routeInfo.Public = open
+			routeInfo.RouteGroup = RouteGroup{
+				GroupName: group.GetAnnotation("tag"),
+			}
+			ps.RouterMap[path] = routeInfo
 		}
 	}
 	return nil
@@ -223,7 +233,8 @@ func (ps *Parser) transferSpecChar(data string) string {
 	return data
 }
 
-func (ps *Parser) getOperation(pathItem *openapi.PathItem, route *spec.Route, open bool, tag string) error {
+func (ps *Parser) getOperation(pathItem *openapi.PathItem, route *spec.Route,
+	open bool, tag string, routeInfo *RouteInfos) error {
 	summary := ""
 	desc := ""
 	if route.AtDoc.Text == "" {
@@ -236,6 +247,10 @@ func (ps *Parser) getOperation(pathItem *openapi.PathItem, route *spec.Route, op
 	operation.Summary = summary
 	operation.Description = desc
 	operation.Tags = []string{ps.trim(tag)}
+
+	routeInfo.Method = route.Method
+	routeInfo.HandlerFun = route.Handler
+	routeInfo.Summary = operation.Summary
 
 	switch strings.ToUpper(route.Method) {
 	case http.MethodGet:

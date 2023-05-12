@@ -79,7 +79,7 @@ type (
 
 @server(
 	group: login
-	open: false
+	open: true
 	prefix: /login
 	tag: 登录模块
 )
