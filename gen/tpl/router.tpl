@@ -1,28 +1,23 @@
 package doc
 
-type RouteGroup struct {
-	GroupName string `json:"name"`
+import (
+    "github.com/CloverOS/goctl-swag/doc"
+)
+
+var Route = RouteImpl{}
+
+type RouteImpl struct {
 }
 
-type RouteInfos struct {
-	Method     string `json:"method"`      //  method
-	Path       string `json:"path"`        //  path
-	BasePath   string `json:"base_path"`   //  BasePath
-	HandlerFun string `json:"handler_fun"` //  handlerFun
-	Summary    string `json:"summary"`     //  Summary
-	Public     bool   `json:"public"`      //  is public router
-	RouteGroup
-}
-
-func GetRouteInfos() []RouteInfos {
-    return []RouteInfos{ {{range .}}
+func (r *RouteImpl) GetRouteInfos() []doc.RouteInfos {
+    return []doc.RouteInfos{ {{range .}}
     {
         BasePath:   "{{.BasePath}}",
         HandlerFun: "{{.HandlerFun}}",
         Method:     "{{.Method}}",
         Path:       "{{.Path}}",
         Public:     {{.Public}},
-        RouteGroup: RouteGroup{GroupName: "{{.RouteGroup.GroupName}}"},
+        RouteGroup: doc.RouteGroup{GroupName: "{{.RouteGroup.GroupName}}"},
         Summary:    "{{.Summary}}",
     },
     {{end}}
