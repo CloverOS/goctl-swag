@@ -166,8 +166,12 @@ func (ps *Parser) getPropSchema(member spec.Member, schema *openapi.Schema) {
 func (ps *Parser) getSecurityDefinitions() {
 	apikey, ok := ps.Plugin.Api.Info.Properties["securityDefinitions_apikey"]
 	if ok {
+		name, exist := ps.Plugin.Api.Info.Properties["name"]
+		if !exist {
+			panic("securityDefinitions_apikey.name is nil")
+		}
 		newSecDefValue := openapi.SecurityScheme{}
-		newSecDefValue.Name = apikey
+		newSecDefValue.Name = name
 		newSecDefValue.Description = apikey
 		newSecDefValue.Type = "apiKey"
 		newSecDefValue.In = ps.Plugin.Api.Info.Properties["in"]
