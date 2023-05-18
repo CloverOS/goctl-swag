@@ -9,7 +9,7 @@ var Route = RouteImpl{}
 type RouteImpl struct {
 }
 
-func (r *RouteImpl) GetRouteInfos() []doc.RouteInfos {
+func (r RouteImpl) GetRouteInfos() []doc.RouteInfos {
     return []doc.RouteInfos{ {{range .}}
     {
         BasePath:   "{{.BasePath}}",
