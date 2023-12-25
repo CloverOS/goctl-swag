@@ -36,7 +36,7 @@ go install github.com/CloverOS/goctl-swag/cmd/goctl-swag@latest
 
 ### 快速开始
 
-***先安装好[goctl](https://go-zero.dev/docs/goctl/goctl/)以及goctl-swag插件***
+***先安装好[goctl](https://go-zero.dev/docs/goctl/goctl/)（版本为1.5.4）以及goctl-swag插件***
 
 - 以testdata/go-zero/user.api为例,进行文档生成
 

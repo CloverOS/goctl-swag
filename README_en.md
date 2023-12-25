@@ -36,7 +36,7 @@ go install github.com/CloverOS/goctl-swag/cmd/goctl-swag@latest
 
 ### Quick Start
 
-***First install [goctl](https://go-zero.dev/docs/goctl/goctl/) and the goctl-swag plugin***
+***First install [goctl](https://go-zero.dev/docs/goctl/goctl/) (v1.5.4)and the goctl-swag plugin***
 
 - Take testdata/go-zero/user.api as an example, generate documentation
 
